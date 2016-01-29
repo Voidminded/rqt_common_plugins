@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>457</width>
     <height>300</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0,0,1">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0,0,0,1">
      <item>
       <widget class="QComboBox" name="topics_combo_box">
        <property name="sizeAdjustPolicy">
@@ -78,6 +78,13 @@
          <width>16</width>
          <height>16</height>
         </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="select_area_push_button">
+       <property name="text">
+        <string/>
        </property>
       </widget>
      </item>
