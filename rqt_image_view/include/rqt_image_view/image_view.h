@@ -93,8 +93,6 @@ protected slots:
 
   virtual void saveImage();
 
-  virtual void selectArea();
-
 protected:
 
   virtual void callbackImage(const sensor_msgs::Image::ConstPtr& msg);
@@ -106,10 +104,6 @@ protected:
   image_transport::Subscriber subscriber_;
 
   cv::Mat conversion_mat_;
-
-private:
-
-  QString arg_topic_name;
 
 };
 
