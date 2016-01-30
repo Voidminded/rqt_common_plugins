@@ -78,6 +78,9 @@ void ImageView::initPlugin(qt_gui_cpp::PluginContext& context)
   ui_.save_as_image_push_button->setIcon(QIcon::fromTheme("image-x-generic"));
   connect(ui_.save_as_image_push_button, SIGNAL(pressed()), this, SLOT(saveImage()));
 
+  ui_.select_area_push_button->setIcon( QIcon::fromTheme("zoom-fit-best"));
+  connect( ui_.select_area_push_button, SIGNAL( pressed()), this, SLOT(selectAre()));
+
   // set topic name if passed in as argument
   const QStringList& argv = context.argv();
   if (!argv.empty()) {
@@ -300,6 +303,11 @@ void ImageView::saveImage()
   }
 
   img.save(file_name);
+}
+
+void ImageView::selectArea()
+{
+  
 }
 
 void ImageView::callbackImage(const sensor_msgs::Image::ConstPtr& msg)

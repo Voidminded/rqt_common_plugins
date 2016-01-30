@@ -93,6 +93,8 @@ protected slots:
 
   virtual void saveImage();
 
+  virtual void selectArea();
+
 protected:
 
   virtual void callbackImage(const sensor_msgs::Image::ConstPtr& msg);
