@@ -76,8 +76,22 @@ void ImageView::initPlugin(qt_gui_cpp::PluginContext& context)
 
   connect(ui_.dynamic_range_check_box, SIGNAL(toggled(bool)), this, SLOT(onDynamicRange(bool)));
 
-  ui_.save_as_image_push_button->setIcon(QIcon::fromTheme("image"));
+  ui_.save_as_image_push_button->setIcon(QIcon::fromTheme("image-x-generic"));
   connect(ui_.save_as_image_push_button, SIGNAL(pressed()), this, SLOT(saveImage()));
+
+  // set topic name if passed in as argument
+  const QStringList& argv = context.argv();
+  if (!argv.empty()) {
+    arg_topic_name = argv[0];
+    // add topic name to list if not yet in
+    int index = ui_.topics_combo_box->findText(arg_topic_name);
+    if (index == -1) {
+      QString label(arg_topic_name);
+      label.replace(" ", "/");
+      ui_.topics_combo_box->addItem(label, QVariant(arg_topic_name));
+      ui_.topics_combo_box->setCurrentIndex(ui_.topics_combo_box->findText(arg_topic_name));
+    }
+  }
 
   connect( ui_.image_frame, SIGNAL(ROISignal(QPoint,QPoint)), this, SLOT(publishROI(QPoint,QPoint)));
   ROIPublisher = getNodeHandle().advertise<sensor_msgs::RegionOfInterest>("regionOfInterest",1);
@@ -110,8 +124,16 @@ void ImageView::restoreSettings(const qt_gui_cpp::Settings& plugin_settings, con
   ui_.max_range_double_spin_box->setValue(max_range);
 
   QString topic = instance_settings.value("topic", "").toString();
-  //qDebug("ImageView::restoreSettings() topic '%s'", topic.toStdString().c_str());
-  selectTopic(topic);
+  // don't overwrite topic name passed as command line argument
+  if (!arg_topic_name.isEmpty())
+  {
+    arg_topic_name = "";
+  }
+  else
+  {
+    //qDebug("ImageView::restoreSettings() topic '%s'", topic.toStdString().c_str());
+    selectTopic(topic);
+  }
 }
 
 void ImageView::updateTopicList()

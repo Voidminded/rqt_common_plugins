@@ -93,7 +93,7 @@ void RatioLayoutedFrame::resizeToFitAspectRatio()
     rect.setHeight(int(height + 0.5));
   }
 
-  // resize taking the border line into accountRatioLayoutedFrame
+  // resize taking the border line into account
   int border = lineWidth();
   resize(rect.width() + 2 * border, rect.height() + 2 * border);
 }

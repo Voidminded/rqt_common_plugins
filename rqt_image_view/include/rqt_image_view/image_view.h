@@ -105,9 +105,13 @@ protected:
 
   image_transport::Subscriber subscriber_;
 
+  cv::Mat conversion_mat_;
+
   ros::Publisher ROIPublisher;
 
-  cv::Mat conversion_mat_;
+private:
+
+  QString arg_topic_name;
 
 };
 
