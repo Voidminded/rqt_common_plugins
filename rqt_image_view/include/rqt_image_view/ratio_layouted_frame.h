@@ -43,8 +43,6 @@
 #include <QSize>
 #include <QMouseEvent>
 
-#include "ros/ros.h"
-
 namespace rqt_image_view {
 
 /**
