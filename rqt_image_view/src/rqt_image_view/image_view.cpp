@@ -35,6 +35,7 @@
 #include <pluginlib/class_list_macros.h>
 #include <ros/master.h>
 #include <sensor_msgs/image_encodings.h>
+#include <sensor_msgs/RegionOfInterest.h>
 
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -77,6 +78,9 @@ void ImageView::initPlugin(qt_gui_cpp::PluginContext& context)
 
   ui_.save_as_image_push_button->setIcon(QIcon::fromTheme("image"));
   connect(ui_.save_as_image_push_button, SIGNAL(pressed()), this, SLOT(saveImage()));
+
+  connect( ui_.image_frame, SIGNAL(ROISignal(QPoint,QPoint)), this, SLOT(publishROI(QPoint,QPoint)));
+  ROIPublisher = getNodeHandle().advertise<sensor_msgs::RegionOfInterest>("regionOfInterest",1);
 }
 
 void ImageView::shutdownPlugin()
@@ -278,6 +282,16 @@ void ImageView::saveImage()
   }
 
   img.save(file_name);
+}
+
+void ImageView::publishROI(QPoint from, QPoint to)
+{
+    sensor_msgs::RegionOfInterest reg;
+    reg.x_offset = from.x();
+    reg.y_offset = from.y();
+    reg.width = to.x()-from.x();
+    reg.height = to.y()-from.y();
+    ROIPublisher.publish( reg);
 }
 
 void ImageView::callbackImage(const sensor_msgs::Image::ConstPtr& msg)

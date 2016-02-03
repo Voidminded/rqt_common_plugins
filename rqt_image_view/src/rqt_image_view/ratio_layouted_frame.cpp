@@ -41,6 +41,9 @@ RatioLayoutedFrame::RatioLayoutedFrame(QWidget* parent, Qt::WFlags flags)
   , aspect_ratio_(4, 3)
 {
   connect(this, SIGNAL(delayed_update()), this, SLOT(update()), Qt::QueuedConnection);
+  dragPos = QPoint(0,0);
+  dropPos = QPoint(0,0);
+  dragging = false;
 }
 
 RatioLayoutedFrame::~RatioLayoutedFrame()
@@ -90,7 +93,7 @@ void RatioLayoutedFrame::resizeToFitAspectRatio()
     rect.setHeight(int(height + 0.5));
   }
 
-  // resize taking the border line into account
+  // resize taking the border line into accountRatioLayoutedFrame
   int border = lineWidth();
   resize(rect.width() + 2 * border, rect.height() + 2 * border);
 }
@@ -147,7 +150,29 @@ void RatioLayoutedFrame::paintEvent(QPaintEvent* event)
     painter.setBrush(gradient);
     painter.drawRect(0, 0, frameRect().width() + 1, frameRect().height() + 1);
   }
+  painter.setPen( Qt::cyan);
+  painter.setBrush( Qt::transparent);
+  painter.drawRect( QRect( dragPos, dropPos));
   qimage_mutex_.unlock();
+}
+
+void RatioLayoutedFrame::mousePressEvent(QMouseEvent *event)
+{
+    dragPos = event->pos();
+    dragging = true;
+}
+
+void RatioLayoutedFrame::mouseReleaseEvent(QMouseEvent *event)
+{
+    dropPos = event->pos();
+    dragging = false;
+    emit ROISignal( dragPos, dropPos);
+}
+
+void RatioLayoutedFrame::mouseMoveEvent(QMouseEvent *event)
+{
+    if( dragging)
+        dropPos = event->pos();
 }
 
 int RatioLayoutedFrame::greatestCommonDivisor(int a, int b)

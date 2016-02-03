@@ -93,6 +93,8 @@ protected slots:
 
   virtual void saveImage();
 
+  virtual void publishROI( QPoint from, QPoint to);
+
 protected:
 
   virtual void callbackImage(const sensor_msgs::Image::ConstPtr& msg);
@@ -102,6 +104,8 @@ protected:
   QWidget* widget_;
 
   image_transport::Subscriber subscriber_;
+
+  ros::Publisher ROIPublisher;
 
   cv::Mat conversion_mat_;
 

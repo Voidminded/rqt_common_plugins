@@ -41,6 +41,9 @@
 #include <QPainter>
 #include <QRect>
 #include <QSize>
+#include <QMouseEvent>
+
+#include "ros/ros.h"
 
 namespace rqt_image_view {
 
@@ -80,11 +83,19 @@ signals:
 
   void delayed_update();
 
+  void ROISignal(QPoint, QPoint);
+
 protected:
 
   void setAspectRatio(unsigned short width, unsigned short height);
 
   void paintEvent(QPaintEvent* event);
+
+  void mousePressEvent(QMouseEvent* event);
+
+  void mouseReleaseEvent(QMouseEvent* event);
+
+  void mouseMoveEvent(QMouseEvent* event);
 
 private:
 
@@ -93,6 +104,10 @@ private:
   QSize aspect_ratio_;
 
   QImage qimage_;
+
+  QPoint dragPos, dropPos;
+
+  bool dragging;
   mutable QMutex qimage_mutex_;
 
 };
