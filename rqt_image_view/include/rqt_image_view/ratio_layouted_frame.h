@@ -103,7 +103,7 @@ private:
 
   QImage qimage_;
 
-  QPoint dragPos, dropPos;
+  QPoint tempDragPos, dragPos, dropPos;
 
   bool dragging;
   mutable QMutex qimage_mutex_;

@@ -158,21 +158,28 @@ void RatioLayoutedFrame::paintEvent(QPaintEvent* event)
 
 void RatioLayoutedFrame::mousePressEvent(QMouseEvent *event)
 {
-    dragPos = event->pos();
+    tempDragPos = event->pos();
     dragging = true;
 }
 
 void RatioLayoutedFrame::mouseReleaseEvent(QMouseEvent *event)
 {
-    dropPos = event->pos();
-    dragging = false;
-    emit ROISignal( dragPos, dropPos);
+    if( event->pos() != tempDragPos)
+    {
+        dropPos = event->pos();
+        dragging = false;
+        emit ROISignal( dragPos, dropPos);
+    }
 }
 
 void RatioLayoutedFrame::mouseMoveEvent(QMouseEvent *event)
 {
     if( dragging)
+    {
+	dragPos = tempDragPos;
         dropPos = event->pos();
+    }
+
 }
 
 int RatioLayoutedFrame::greatestCommonDivisor(int a, int b)

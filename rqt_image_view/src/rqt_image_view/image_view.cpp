@@ -94,7 +94,7 @@ void ImageView::initPlugin(qt_gui_cpp::PluginContext& context)
   }
 
   connect( ui_.image_frame, SIGNAL(ROISignal(QPoint,QPoint)), this, SLOT(publishROI(QPoint,QPoint)));
-  ROIPublisher = getNodeHandle().advertise<sensor_msgs::RegionOfInterest>("regionOfInterest",1);
+  ROIPublisher = getNodeHandle().advertise<sensor_msgs::RegionOfInterest>("clicked_roi",1);
 }
 
 void ImageView::shutdownPlugin()
@@ -308,12 +308,15 @@ void ImageView::saveImage()
 
 void ImageView::publishROI(QPoint from, QPoint to)
 {
-    sensor_msgs::RegionOfInterest reg;
-    reg.x_offset = from.x();
-    reg.y_offset = from.y();
-    reg.width = to.x()-from.x();
-    reg.height = to.y()-from.y();
-    ROIPublisher.publish( reg);
+    if( from != to)
+    {
+        sensor_msgs::RegionOfInterest reg;
+        reg.x_offset = std::min(from.x(), to.x());
+        reg.y_offset = std::min(from.y(), to.x());
+	reg.width = abs(to.x()-from.x());
+        reg.height = abs(to.y()-from.y());
+        ROIPublisher.publish( reg);
+    }
 }
 
 void ImageView::callbackImage(const sensor_msgs::Image::ConstPtr& msg)
