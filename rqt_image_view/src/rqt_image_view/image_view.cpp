@@ -306,15 +306,15 @@ void ImageView::saveImage()
   img.save(file_name);
 }
 
-void ImageView::publishROI(QPoint from, QPoint to)
+void ImageView::publishROI(QPoint p0, QPoint p1)
 {
-    if( from != to)
+    if( p0 != p1)
     {
         sensor_msgs::RegionOfInterest reg;
-        reg.x_offset = std::min(from.x(), to.x());
-        reg.y_offset = std::min(from.y(), to.x());
-	reg.width = abs(to.x()-from.x());
-        reg.height = abs(to.y()-from.y());
+        reg.x_offset = std::min(p0.x(), p1.x());
+        reg.y_offset = std::min(p0.y(), p1.y());
+        reg.width = abs(p1.x()-p0.x());
+        reg.height = abs(p1.y()-p0.y());
         ROIPublisher.publish( reg);
     }
 }

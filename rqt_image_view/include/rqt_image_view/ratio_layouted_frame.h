@@ -77,6 +77,8 @@ public:
 
   void setInnerFrameFixedSize(const QSize& size);
 
+  QPoint revertResizeAspectRatio(const QPoint& p);
+
 signals:
 
   void delayed_update();

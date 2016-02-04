@@ -70,6 +70,12 @@ void RatioLayoutedFrame::setImage(const QImage& image)//, QMutex* image_mutex)
   qimage_ = image.copy();
   qimage_mutex_.unlock();
   setAspectRatio(qimage_.width(), qimage_.height());
+//  QPixmap tempImg( QPixmap::fromImage(qimage_));
+//  QPainter painter( &tempImg);
+//  painter.setPen( Qt::red);
+//  painter.setBrush( Qt::red);
+//  painter.drawRect( QRect( revertResizeAspectRatio( dragPos), revertResizeAspectRatio(dropPos)));
+//  qimage_ = tempImg.toImage();
   emit delayed_update();
 }
 
@@ -156,19 +162,36 @@ void RatioLayoutedFrame::paintEvent(QPaintEvent* event)
   qimage_mutex_.unlock();
 }
 
+QPoint RatioLayoutedFrame::revertResizeAspectRatio(const QPoint &p)
+{
+//    QPoint orig( p.x() - lineWidth()*2, p.y() - lineWidth()*2);
+    QPoint orig( p);
+    double x = double(orig.x());
+    double y = double(orig.y());
+    orig.setX( (x * qimage_.width() / contentsRect().width()));
+    orig.setY( (y * qimage_.height() / contentsRect().height()));
+    return orig;
+}
+
 void RatioLayoutedFrame::mousePressEvent(QMouseEvent *event)
 {
     tempDragPos = event->pos();
-    dragging = true;
+	dragging = true;
 }
 
 void RatioLayoutedFrame::mouseReleaseEvent(QMouseEvent *event)
 {
-    if( event->pos() != tempDragPos)
+    if( !(event->pos().x() == tempDragPos.x() || event->pos().y() == tempDragPos.y()))
     {
-        dropPos = event->pos();
+        if( contentsRect().contains( event->pos()))
+            dropPos = event->pos();
+        else
+        {
+            dropPos.setX((event->pos().x() >= contentsRect().width())?contentsRect().width()-1:(event->pos().x() < 0 ? 0 :event->pos().x()));
+            dropPos.setY((event->pos().y() >= contentsRect().height())?contentsRect().height()-1:(event->pos().y() < 0? 0: event->pos().y()));
+        }
         dragging = false;
-        emit ROISignal( dragPos, dropPos);
+        emit ROISignal( revertResizeAspectRatio( dragPos), revertResizeAspectRatio( dropPos));
     }
 }
 
@@ -176,10 +199,15 @@ void RatioLayoutedFrame::mouseMoveEvent(QMouseEvent *event)
 {
     if( dragging)
     {
-	dragPos = tempDragPos;
-        dropPos = event->pos();
+        dragPos = tempDragPos;
+        if( contentsRect().contains( event->pos()))
+                dropPos = event->pos();
+        else
+        {
+            dropPos.setX((event->pos().x() >= contentsRect().width())?contentsRect().width()-1:(event->pos().x() < 0 ? 0 :event->pos().x()));
+            dropPos.setY((event->pos().y() >= contentsRect().height())?contentsRect().height()-1:(event->pos().y() < 0? 0: event->pos().y()));
+        }
     }
-
 }
 
 int RatioLayoutedFrame::greatestCommonDivisor(int a, int b)

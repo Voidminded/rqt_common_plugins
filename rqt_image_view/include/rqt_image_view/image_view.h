@@ -93,7 +93,7 @@ protected slots:
 
   virtual void saveImage();
 
-  virtual void publishROI( QPoint from, QPoint to);
+  virtual void publishROI( QPoint p0, QPoint p1);
 
 protected:
 
